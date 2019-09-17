@@ -8,6 +8,9 @@ package com.mycompany.test;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
 
 /**
  *
@@ -17,6 +20,12 @@ public class SimpleHttpServer {
 	private int port;
 	private HttpServer server;
 
+        HostnameVerifier allHostsValid = new HostnameVerifier() {
+      @Override
+      public boolean verify(String hostname, SSLSession session) {
+        return true;
+      }
+    };
 	public void Start(int port) {
 		try {
 			this.port = port;
@@ -27,8 +36,9 @@ public class SimpleHttpServer {
 			server.createContext("/echoGet", new Handlers.EchoGetHandler());
 			server.createContext("/echoPost", new Handlers.EchoPostHandler());
 			server.setExecutor(null);
+                        HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
 			server.start();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

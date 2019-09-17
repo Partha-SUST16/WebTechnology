@@ -33,7 +33,7 @@ public class Handlers {
 		public void handle(HttpExchange he) throws IOException {
 			String response = "<h1>Server start success if you see this message</h1>" + "<h1>Port: " + Main.port + "</h1>";
 			he.sendResponseHeaders(200, response.length());
-			                 OutputStream os = he.getResponseBody();
+			OutputStream os = he.getResponseBody();
 			os.write(response.getBytes());
 			os.close();
 		}
@@ -61,16 +61,25 @@ public class Handlers {
 		public void handle(HttpExchange he) throws IOException {
 			// parse request
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			                 URI requestedUri = he.getRequestURI();
+                        URI requestedUri = he.getRequestURI();
 			String query = requestedUri.getRawQuery();
+                        System.out.println("query " + query);
 			parseQuery(query, parameters);
+                        Integer id = Integer.parseInt(parameters.get("id").toString());
+                        System.out.println("id "+id);
+                        Information info = Main.arr.get(id-1);
+                        JSONObject js = new JSONObject(info);
 			// send response
 			String response = "";
-			for (String key : parameters.keySet())
-				response += key + " = " + parameters.get(key) + "\n";
+                        if(id>Main.arr.size())
+                            response = "IndexOutOfBound";
+                        else 
+                            response = js.toString();
+//			for (String key : parameters.keySet())
+//				response += key + " = " + parameters.get(key) + "\n";
 			he.sendResponseHeaders(200, response.length());
 			OutputStream os = he.getResponseBody();
-			os.write(response.toString().getBytes());
+			os.write(response.getBytes());
 			os.close();
 		}
 
@@ -83,13 +92,15 @@ public class Handlers {
 			System.out.println("Served by /echoPost handler...");
 			// parse request
 			Map<String, Object> parameters = new HashMap<String, Object>();
-			                 InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
-			                 BufferedReader br = new BufferedReader(isr);
+			InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+			BufferedReader br = new BufferedReader(isr);
 			String query = br.readLine();
                         System.out.println(query);
                         JSONObject js = new JSONObject(query.toString());
                         String name = js.getString("name");
                         String phone = js.getString("phone");
+                        Information info = new Information(name,phone);
+                        Main.arr.add(info);
                         System.out.println("Name "+name);
                         System.out.println("Phone "+phone);
 			//parseQuery(query, parameters);

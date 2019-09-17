@@ -5,23 +5,22 @@
  */
 package com.mycompany.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author USER
  */
 public class Main {
-	public static int port = 9000;
+	public static int port = 15001;
+        public static List<Information> arr ;
 	public static void main(String[] args) {
 //		// start http server
+                arr = new ArrayList<>();
 		SimpleHttpServer httpServer = new SimpleHttpServer();
 		httpServer.Start(port);
 		
-		// start https server
-//		SimpleHttpsServer httpsServer = new SimpleHttpsServer();
-//		httpsServer.Start(port);
-		
-//		System.out.println(System.getProperty("user.dir"));
-//		System.out.println(Main.class.getClassLoader().getResource("").getPath());
 		
 	}
 }
