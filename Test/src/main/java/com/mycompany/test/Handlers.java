@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.json.JSONObject;
 
 /**
  *
@@ -85,12 +86,18 @@ public class Handlers {
 			                 InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
 			                 BufferedReader br = new BufferedReader(isr);
 			String query = br.readLine();
-			parseQuery(query, parameters);
+                        System.out.println(query);
+                        JSONObject js = new JSONObject(query.toString());
+                        String name = js.getString("name");
+                        String phone = js.getString("phone");
+                        System.out.println("Name "+name);
+                        System.out.println("Phone "+phone);
+			//parseQuery(query, parameters);
 			// send response
-			String response = "";
-			for (String key : parameters.keySet())
-				response += key + " = " + parameters.get(key) + "\n";
-                        System.out.println(response);
+			String response = name+" "+phone;
+//			for (String key : parameters.keySet())
+//				response += key + " = " + parameters.get(key) + "\n";
+//                        System.out.println(response);
 			he.sendResponseHeaders(200, response.length());
 			OutputStream os = he.getResponseBody();
 			os.write(response.toString().getBytes());
